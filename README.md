@@ -33,16 +33,6 @@ A FastAPI-based application that allows users to hide secret messages inside ima
 ---
 ---
 
-## Setup Instructions
-
-### 1. Clone the Repository and Run the Project
-
-
-git clone https://github.com/your-username/steganography-app.git
-cd steganography-app
-pip install -r requirements.txt
-uvicorn main:app --reload
-
 
 ### API Endpoints
 POST /uploadfile
@@ -67,6 +57,7 @@ Extract hidden text from a stego image.
 
 <img width="1273" alt="Screenshot 2025-06-17 at 8 12 15 PM" src="https://github.com/user-attachments/assets/9780e09b-a4af-49e9-bfbf-763b26b2e411" />
 
+<img width="1412" alt="Screenshot 2025-06-17 at 8 17 37 PM" src="https://github.com/user-attachments/assets/6ef912e2-cba3-483a-bc42-7f84634599eb" />
 
 
 ### Examples
