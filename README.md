@@ -64,6 +64,10 @@ Extract hidden text from a stego image.
 
 <img width="1428" alt="Screenshot 2025-06-17 at 8 11 42 PM" src="https://github.com/user-attachments/assets/2101a5cc-55ef-4486-ac8c-b7684b51215c" />
 
+### Front End Deployment 
+https://steganography-app1-fpruqdzg9-anamika-laxmis-projects.vercel.app/
+### Back End Deployment
+Working on Render
 
 ### Author
 Anamika Laxmi Prasad
