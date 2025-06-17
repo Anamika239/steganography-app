@@ -55,15 +55,15 @@ Output: Downloadable stego image
 POST /extractfile
 Extract hidden text from a stego image.
 
-Input: Stego image file (PNG)
+- Input: Stego image file (PNG)
+- Output: Extracted text (JSON)
 
-Output: Extracted text (JSON)
 <img width="524" alt="Screenshot 2025-06-17 at 8 13 21 PM" src="https://github.com/user-attachments/assets/a53e99f3-aa62-4527-9288-f745c0fabcf7" />
 
 ### Example Use Cases
-Secure personal messages
-Embedding watermarks or metadata
-Teaching cryptography or cybersecurity
+- Secure personal messages
+- Embedding watermarks or metadata
+- Teaching cryptography or cybersecurity
 
 <img width="1273" alt="Screenshot 2025-06-17 at 8 12 15 PM" src="https://github.com/user-attachments/assets/9780e09b-a4af-49e9-bfbf-763b26b2e411" />
 
