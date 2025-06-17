@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Steganography Tool</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.7);
+      z-index: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      background: transparent;
+      z-index: 1;
+    }
+
+    main {
+      background: rgba(255, 255, 255, 0.92);
+      width: 380px;
+      padding: 1.5rem;
+      border-radius: 16px;
+      box-shadow: 0 0 0 4px transparent;
+      animation: glow 4s ease-in-out infinite;
+      transition: 0.3s;
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2); }
+      50% { box-shadow: 0 0 16px 4px rgba(96, 165, 250, 0.5); }
+      100% { box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.2); }
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #0f172a;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 0.8rem 0 0.4rem;
+    }
+    input[type="file"], textarea {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      background-color: #f8fafc;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1rem;
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #2563eb;
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #e0f2fe;
+      border-radius: 8px;
+      font-family: monospace;
+      color: #0369a1;
+    }
+
+    .preview-panel {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 1rem;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .preview-panel img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+    }
+
+    .download-link a {
+      display: inline-block;
+      padding: 0.6rem 1rem;
+      background-color: #10b981;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .download-link a:hover {
+      background-color: #059669;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- LEFT PANEL -->
+    <main>
+      <h1>Steganography</h1>
+
+      <section>
+        <h2>Hide Data</h2>
+        <form id="hide-form">
+          <label for="hide-image">Image File</label>
+          <input type="file" id="hide-image" accept="image/png, image/jpeg" required />
+
+          <label for="hide-text">Text to Hide</label>
+          <textarea id="hide-text" placeholder="Secret message..." required></textarea>
+
+          <button type="submit">Hide Data</button>
+        </form>
+        <div id="hide-result" class="result" style="display: none;"></div>
+      </section>
+
+      <hr />
+
+      <section>
+        <h2>Extract Data</h2>
+        <form id="extract-form">
+          <label for="extract-image">Image File</label>
+          <input type="file" id="extract-image" accept="image/png, image/jpeg" required />
+
+          <button type="submit">Extract Data</button>
+        </form>
+        <div id="extract-result" class="result" style="display: none;"></div>
+      </section>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <div class="preview-panel" id="preview-panel" style="display: none;">
+      <h3>Stego Image</h3>
+      <img id="stego-img" src="#" alt="Stego Preview" />
+      <div class="download-link">
+        <a id="download-link" href="#" download="stego_image.png">Download</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const hideForm = document.getElementById('hide-form');
+    const hideImageInput = document.getElementById('hide-image');
+    const hideTextInput = document.getElementById('hide-text');
+    const hideResultDiv = document.getElementById('hide-result');
+    const previewPanel = document.getElementById('preview-panel');
+    const stegoImg = document.getElementById('stego-img');
+    const downloadLink = document.getElementById('download-link');
+
+    const extractForm = document.getElementById('extract-form');
+    const extractImageInput = document.getElementById('extract-image');
+    const extractResultDiv = document.getElementById('extract-result');
+
+    hideForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      hideResultDiv.style.display = 'none';
+      previewPanel.style.display = 'none';
+
+      const file = hideImageInput.files[0];
+      const text = hideTextInput.value.trim();
+
+      if (!file || !text) return alert('Please provide both image and text.');
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('data', text);
+
+      try {
+        const response = await fetch('http://localhost:8000/uploadfile', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          alert('Error: ' + (err.error || 'Failed to hide data'));
+          return;
+        }
+
+        const downloadResponse = await fetch('http://localhost:8000/uploadfile', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!downloadResponse.ok) {
+          alert('Failed to get stego image.');
+          return;
+        }
+
+        const blob = await downloadResponse.blob();
+        const url = URL.createObjectURL(blob);
+        downloadLink.href = url;
+        stegoImg.src = url;
+        previewPanel.style.display = 'block';
+
+        hideResultDiv.textContent = 'Data hidden successfully!';
+        hideResultDiv.style.display = 'block';
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+
+    extractForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      extractResultDiv.style.display = 'none';
+
+      const file = extractImageInput.files[0];
+      if (!file) return alert('Please choose an image.');
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://localhost:8000/extractfile', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          alert('Error: ' + (err.error || 'Failed to extract data'));
+          return;
+        }
+
+        const json = await response.json();
+        extractResultDiv.textContent = json.hidden_data || '(No data found)';
+        extractResultDiv.style.display = 'block';
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
