@@ -7,7 +7,7 @@ import base64
 
 app = FastAPI()
 
-# Allow all origins (adjust in prod)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -67,7 +67,7 @@ async def upload_file(file: UploadFile = File(...), data: str = Form(...)):
         new_image.save(buf, format="PNG")
         buf.seek(0)
 
-        # Return image bytes as response for download
+       
         return StreamingResponse(buf, media_type="image/png",
             headers={"Content-Disposition": "attachment; filename=stego_image.png"})
     except Exception as e:
